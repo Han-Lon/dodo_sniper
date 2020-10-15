@@ -1,0 +1,8 @@
+.idea/
+venv/
+env/
+v-env/
+
+# Don't upload the entire geckodriver exe or log files
+geckodriver.exe
+geckodriver.log
