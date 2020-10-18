@@ -13,13 +13,11 @@ while True:
     if xpath_bid_btn.lower() == 'tickets':
         # Don't go higher than 10 Nook mile tickets
         ceiling = 10
-        # xpath_bid_btn = '//*[@id="btn-quick-bid-1"]'
         css_selector_bidbtn = '#btn-quick-bid-1'
         break
     elif xpath_bid_btn.lower() == 'bells':
         # Don't go higher than 150000 bells
         ceiling = 250000
-        # xpath_bid_btn = '//*[@id="btn-quick-bid-1000"]'
         css_selector_bidbtn = '#btn-quick-bid-1000'
         break
     else:
@@ -58,7 +56,6 @@ def snipe(driver):
     tnow = timedelta(hours=time.hour, minutes=time.minute, seconds=time.second)
     tsnipe = timedelta(hours=0, minutes=0, seconds=seconds)
     twait = tnow - tsnipe
-    print('Waiting for... {}'.format(str(twait)))
     current_bid = driver.find_element_by_css_selector('div.col-6:nth-child(2) > h4:nth-child(3)').text
     try:
         # Don't bid if the current bid is higher than the ceiling (upper limit)
@@ -70,6 +67,7 @@ def snipe(driver):
     except TypeError as e:
         print('No bids expected: {}'.format(current_bid))
     # Sleep for a few seconds
+    print('Waiting for... {}'.format(str(twait)))
     sleep(twait.total_seconds())
     print('Wait is over')
     current_bid = driver.find_element_by_css_selector('div.col-6:nth-child(2) > h4:nth-child(3)').text
