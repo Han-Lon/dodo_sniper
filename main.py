@@ -53,15 +53,12 @@ def discord_login(driver):
 def snipe(driver):
     """Find time left in auction, wait until 2 seconds before auction ends (while checking ceiling), check
        ceiling one more time, and then snipe"""
-    # time = driver.find_element_by_xpath('/html/body/main/div/div[5]/div/div[1]/div[1]/div[3]/div[2]/h4').text.split()[-1]
-    # time = driver.find_element_by_xpath('/html/body/main/div/div[4]/div/div[1]/div[1]/div[1]/h3').text.split()[-1]
     time = driver.find_element_by_css_selector('h3.mb-0').text.split()[-1]
     time = datetime.strptime(time, "%H:%M:%S").time()
     tnow = timedelta(hours=time.hour, minutes=time.minute, seconds=time.second)
     tsnipe = timedelta(hours=0, minutes=0, seconds=seconds)
     twait = tnow - tsnipe
     print('Waiting for... {}'.format(str(twait)))
-    # current_bid = driver.find_element_by_xpath('/html/body/main/div/div[5]/div/div[1]/div/div[3]/div[1]/div[2]/h4').text
     current_bid = driver.find_element_by_css_selector('div.col-6:nth-child(2) > h4:nth-child(3)').text
     try:
         # Don't bid if the current bid is higher than the ceiling (upper limit)
@@ -69,25 +66,22 @@ def snipe(driver):
             pass
         else:
             print('Current bid is {}. Too high, not bidding'.format(str(current_bid)))
-            exit(69)
+            exit(1)
     except TypeError as e:
         print('No bids expected: {}'.format(current_bid))
     # Sleep for a few seconds
     sleep(twait.total_seconds())
     print('Wait is over')
-    # current_bid = driver.find_element_by_xpath('/html/body/main/div/div[5]/div/div[1]/div/div[3]/div[1]/div[2]/h4').text
     current_bid = driver.find_element_by_css_selector('div.col-6:nth-child(2) > h4:nth-child(3)').text
     try:
         # If the current bid is lower than the ceiling, place a bid. Otherwise, exit the program
         if current_bid < ceiling:
-            # driver.find_element_by_xpath(xpath_bid_btn).click()
             driver.find_element_by_css_selector(css_selector_bidbtn).click()
         else:
             print('Current bid is {}. Too high, not bidding'.format(str(current_bid)))
             exit(1)
     except TypeError as e:
         print('No bids expected: {}'.format(current_bid))
-        # driver.find_element_by_xpath(xpath_bid_btn).click()
         driver.find_element_by_css_selector(css_selector_bidbtn).click()
 
 
