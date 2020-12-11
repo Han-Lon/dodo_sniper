@@ -17,7 +17,7 @@ while True:
         break
     elif xpath_bid_btn.lower() == 'bells':
         # Don't go higher than 150000 bells
-        ceiling = 250000
+        ceiling = 500000
         css_selector_bidbtn = '#btn-quick-bid-1000'
         break
     else:
@@ -56,7 +56,20 @@ def snipe(driver):
     tnow = timedelta(hours=time.hour, minutes=time.minute, seconds=time.second)
     tsnipe = timedelta(hours=0, minutes=0, seconds=seconds)
     twait = tnow - tsnipe
-    current_bid = int(driver.find_element_by_css_selector('div.col-6:nth-child(2) > h4:nth-child(3)').text)
+    # TODO make this a separate function call
+    try:
+        current_bid = int(driver.find_element_by_css_selector('div.col-6:nth-child(2) > h4:nth-child(3)').text.replace(',', ''))
+    except ValueError as e:
+        if 'No bids' in str(e):
+            print(f'Received error when checking current_bid, assuming "No Bids". Check this for accuracy {str(e)}')
+            current_bid = 0
+        else:
+            raise
+    # Debugging things - make sure the bid button is present and at the expected CSS selector path
+    print('Finding bid button...')
+    driver.find_element_by_css_selector(css_selector_bidbtn)
+    print('Bid button found!')
+    print(f'Current bid is {current_bid} and ceiling is {ceiling}')
     try:
         # Don't bid if the current bid is higher than the ceiling (upper limit)
         if current_bid < ceiling:
@@ -71,7 +84,15 @@ def snipe(driver):
     print('Waiting for... {}'.format(str(twait)))
     sleep(twait.total_seconds())
     print('Wait is over')
-    current_bid = int(driver.find_element_by_css_selector('div.col-6:nth-child(2) > h4:nth-child(3)').text)
+    # TODO make this a separate function call
+    try:
+        current_bid = int(driver.find_element_by_css_selector('div.col-6:nth-child(2) > h4:nth-child(3)').text.replace(',', ''))
+    except ValueError as e:
+        if 'No bids' in str(e):
+            print(f'Received error when checking current_bid, assuming "No Bids". Check this for accuracy {str(e)}')
+            current_bid = 0
+        else:
+            raise
     try:
         # If the current bid is lower than the ceiling, place a bid. Otherwise, exit the program
         if current_bid < ceiling:
