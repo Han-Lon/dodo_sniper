@@ -12,12 +12,12 @@ while True:
     xpath_bid_btn = str(input("Tickets or Bells?: "))
     if xpath_bid_btn.lower() == 'tickets':
         # Don't go higher than 10 Nook mile tickets
-        ceiling = 25
+        ceiling = 1
         css_selector_bidbtn = '#btn-quick-bid-1'
         break
     elif xpath_bid_btn.lower() == 'bells':
         # Don't go higher than 150000 bells
-        ceiling = 500000
+        ceiling = 10
         css_selector_bidbtn = '#btn-quick-bid-1000'
         break
     else:
@@ -52,7 +52,11 @@ def snipe(driver):
     """Find time left in auction, wait until 2 seconds before auction ends (while checking ceiling), check
        ceiling one more time, and then snipe"""
     time = driver.find_element_by_css_selector('h3.mb-0').text.split()[-1]
-    time = datetime.strptime(time, "%H:%M:%S").time()
+    if time.upper() in ['AM', 'PM']:
+        print('AM/PM format detected-- handling datetime formatting appropriately')
+        time = driver.find_element_by_css_selector('h3.mb-0').text.split()[-2:]
+        time = ' '.join(time)
+    time = datetime.strptime(time, "%I:%M:%S %p").time()
     tnow = timedelta(hours=time.hour, minutes=time.minute, seconds=time.second)
     tsnipe = timedelta(hours=0, minutes=0, seconds=seconds)
     twait = tnow - tsnipe
